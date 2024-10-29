@@ -38,6 +38,9 @@ parser.add_argument('--replay_size', type=int, default=1e5)
 parser.add_argument('--model_based', action='store_true')
 parser.add_argument('--num_multi_env', type=int, default=16)
 parser.add_argument('--noop', action='store_true')  # Enable NOOP action
+
+parser.add_argument('--augnet_reward', action='store_true') # AugNet rewardを使用
+
 parser.add_argument('--mse_reward', action='store_true')  # Use MSE reward (default: discriminator reward)
 parser.add_argument('--dis', type=str, default='wgan')  # Type of discriminator. wgan | sngan | gngan
 parser.add_argument('--scale', type=str, default='small')  # Network input resolution scale. tiny: 8x8 | mini: 16x16 | little: 32x32 | small: 64x64 | medium: 128x128 | big: 256x256 | large: 512x512 | huge: 1024x1024
