@@ -78,6 +78,7 @@ elif args.scale == 'mini':
     args.width, args.height = 16, 16
 elif args.scale == 'little':
     args.width, args.height = 32, 32
+# default
 elif args.scale == 'small':
     args.width, args.height = 64, 64
 elif args.scale == 'medium':
@@ -179,7 +180,7 @@ for episode in range(int(args.num_episodes)):
                 critic_loss, policy_loss = agent.update_parameters(env, memory, args.batch_size)
 
     # Train discriminator
-    if not args.mse_reward:
+    if not (args.mse_reward or args.augnet_reward):
         if episode % args.learning_term_dis == 0:
             d_fake, d_real, cost = env.dis.update(env, memory, args.batch_size)
     else:

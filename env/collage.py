@@ -230,7 +230,8 @@ class CollageEnv:
     def get_reward_mse(self, canvas, next_canvas, goal, use_tensor=False):
         # MSE reward
         reward_mse = mse(canvas, goal, use_tensor=use_tensor) - mse(next_canvas, goal, use_tensor=use_tensor)
-        print(reward_mse.shape)
+        # print(reward_mse.shape)
+        # torch.size([64])
         return reward_mse
     
     # get_reward_augnetの実装
