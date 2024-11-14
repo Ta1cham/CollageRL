@@ -80,6 +80,8 @@ parser.add_argument('--sensitivity', type=float)  # The level of low-complexity 
 parser.add_argument('--fixed_t', type=float, default=9)  # Fixed t for custom t_channel
 parser.add_argument('--video_fps', type=int, default=30)  # FPS for sequence video
 
+parser.add_argument('--augnet_reward', action='store_true')  # Activate AugNet reward
+
 args = parser.parse_args()
 args.white_start = True  # Start from white canvas
 args.no_log = True  # No log for testing

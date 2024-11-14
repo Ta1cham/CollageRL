@@ -6,6 +6,23 @@ from model.actor import GaussianPolicy
 from model.critic import SoftQNetwork
 from model.utils import *
 from module.measure import *
+import time
+
+
+def wrapper_profile(func):
+    def wrapper(*args, **kwargs):
+        with torch.profiler.profile(
+            activities=[
+                torch.profiler.ProfilerActivity.CPU,
+                torch.profiler.ProfilerActivity.CUDA, 
+            ],
+        ) as p:
+            result = func(*args, **kwargs)
+        print(p.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+        return result
+    return wrapper
+        
+    
 
 class SAC(object):
     def __init__(self, in_channels, num_actions, args, device, coord):
@@ -51,7 +68,8 @@ class SAC(object):
             _, _, action = self.policy.sample(state)
         self.policy.train()
         return action
-
+    
+    @wrapper_profile
     def update_parameters(self, env, memory, batch_size, recalculate_reward=True):
         with torch.autograd.set_detect_anomaly(True):
             # Sample a batch from memory
@@ -90,7 +108,7 @@ class SAC(object):
                     next_q1, next_q2 = self.critic_target(next_state_batch, next_action)
                     next_q = torch.min(next_q1, next_q2) - self.alpha * next_log_pi
                     target_q = reward_batch + mask_batch * self.gamma * next_q
-
+            
             if self.model_based:
                 next_state_batch, info = env.independent_step(state_batch, action_batch)
                 reward_batch = env.get_reward(state_batch[:, :3, :, :], next_state_batch[:, :3, :, :], state_batch[:, 3:6, :, :], use_tensor=True, shape=shape_batch, grad=True)
@@ -112,7 +130,6 @@ class SAC(object):
             self.critic_optim.step()
 
             pi, log_pi, pi_mean = self.policy.sample(state_batch)
-
             if self.model_based:
                 next_pi_state_batch, info_pi = env.independent_step(state_batch.detach(), pi)
                 

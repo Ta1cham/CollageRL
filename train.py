@@ -19,6 +19,7 @@ from module.rpm import ReplayMemory
 from module.evaluate import Evaluator
 from module.logger import Logger
 from module.dataloader import DataLoader
+    
 
 
 parser = argparse.ArgumentParser(description='Collage Training Arguments')
@@ -145,6 +146,7 @@ else:
 # Start training
 print('Stacking pre-interactions')
 for episode in range(int(args.num_episodes)):
+    print(f'Episode {episode + 1}')
     obs = env.reset()
     
     canvas = resize((args.width, args.height))(tensor(env.canvas, cpu=True))

@@ -5,6 +5,7 @@ from torch.nn.functional import mse_loss
 from module.gpu import *
 
 # Numpy image -> batch tensor
+# (batch, height, width, channel) -> (batch, channel, height, width)
 def tensor(img, cpu=False):
     if len(img.shape) == 4:
         if cpu:

@@ -237,25 +237,34 @@ class CollageEnv:
     # get_reward_augnetの実装
     def get_reward_augnet(self, canvas, next_canvas, goal, use_tensor=False):
         vtr = imgsim.Vectorizer()
+        canvas = (canvas * 255).to(torch.uint8).cpu().numpy()
+        next_canvas = (next_canvas * 255).to(torch.uint8).cpu().numpy()
+        goal = (goal * 255).to(torch.uint8).cpu().numpy()
         if use_tensor:
-            reward_augnet = torch.zeros(len(canvas))
+            reward_augnet = torch.zeros(len(canvas)).to(device)
             for i in range(len(canvas)):
-                vec_canvas = vtr.vectorize(canvas[i])
-                vec_cavans_next = vtr.vectorize(next_canvas[i])
-                vec_goal = vtr.vectorize(goal[i])
-                reward_augnet[i] = imgsim.distance(vec_canvas, vec_goal) - imgsim.distance(vec_cavans_next, vec_goal)
+                cur_canvas = canvas[i].transpose(1, 2, 0)
+                cur_next_canvas = next_canvas[i].transpose(1, 2, 0)
+                cur_goal = goal[i].transpose(1, 2, 0)
+                vec_canvas = vtr.vectorize(cur_canvas)
+                vec_cavans_next = vtr.vectorize(cur_next_canvas)
+                vec_goal = vtr.vectorize(cur_goal)
+                #ans = imgsim.distance(vec_canvas, vec_goal) - imgsim.distance(vec_cavans_next, vec_goal)
+                reward_augnet[i] = float(imgsim.distance(vec_canvas, vec_goal) - imgsim.distance(vec_cavans_next, vec_goal))
         else:
+            canvas = canvas.transpose(0, 2, 3, 1)
             vec_canvas = vtr.vectorize(canvas)
             vec_cavans_next = vtr.vectorize(next_canvas)
             vec_goal = vtr.vectorize(goal)
             reward_augnet = torch.ToTensor(imgsim.distance(vec_canvas, vec_goal) - imgsim.distance(vec_cavans_next, vec_goal))
+        #reward_augnet = reward_augnet.to(device)
         return reward_augnet
 
     def get_reward(self, canvas, next_canvas, goal, use_tensor=False, shape=None, grad=False, step_penalty=True, complexity_bonus=True):
         if self.mse_reward:
             reward = self.get_reward_mse(canvas, next_canvas, goal, use_tensor=use_tensor).view(-1, 1)
         elif self.augnet_reward:
-            reward = self.get_reward_augnet()
+            reward = self.get_reward_augnet(canvas, next_canvas, goal, use_tensor=use_tensor).view(-1, 1)
         else:
             reward = self.get_reward_dis(canvas, next_canvas, goal, use_tensor=use_tensor, shape=shape, grad=grad, complexity_bonus=complexity_bonus)
         if step_penalty:

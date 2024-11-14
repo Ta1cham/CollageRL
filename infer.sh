@@ -5,7 +5,8 @@ WMAX=1.0
 HMIN=0.1
 HMAX=1.0
 LEARNED_MAX_STEPS=10
-WEIGHT_PATH='weights/agents/dtd2imgnet10S_random0110'
+#WEIGHT_PATH='weights/agents/dtd2imgnet10S_random0110'
+WEIGHT_PATH='outputs/2024-11-08-19:59:06/weights_best'
 ALGO=sac
 
 ### Goal image configuration
@@ -14,7 +15,7 @@ GOAL_RESOLUTION=512
 GOAL_RESOLUTION_FIT=horizontal
 
 ### Material images configuration
-SOURCE_DIR='samples/materials/newspaper'
+SOURCE_DIR='../CollageRL/samples/materials/newspaper'
 SOURCE_RESOLUTION_RATIO=0.6
 SOURCE_LOAD_LIMIT=100
 SOURCE_SAMPLE_SIZE=100
