@@ -18,6 +18,10 @@ def tensor(img, cpu=False):
             return torch.FloatTensor(img.transpose(2, 0, 1)).unsqueeze(0).to(device)
 
 def mse(A, B, use_tensor=False):
+    # rescale to 0-255
+    if A.max() <= 1 and B.max() <= 1:
+        A = A * 255
+        B = B * 255
     if use_tensor:
         # mse = mse_loss(A, B, reduction='none')
         mse = ((A - B)**2).mean(-1).mean(-1).mean(-1)

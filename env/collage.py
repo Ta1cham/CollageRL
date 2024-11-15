@@ -221,7 +221,9 @@ class CollageEnv:
         else:
             half = int(sims_input.size(0)/2)
             reward_dis = (sims[half:] - sims[:half])  # C(t+1) sim - C(t) sim
-
+        
+        # scaling reward
+        reward_dis /= 10000
         return reward_dis
 
     def get_reward_mse(self, canvas, next_canvas, goal, use_tensor=False):
@@ -242,6 +244,3 @@ class CollageEnv:
         if self.real_steps > 100:  # set maximum steps (to terminate when too many NOOPs occur)
             return self.steps >= 0
         return self.steps >= self.max_step
-
-    def func(self):
-        print('ouch!')
