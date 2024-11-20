@@ -223,7 +223,7 @@ class CollageEnv:
             reward_dis = (sims[half:] - sims[:half])  # C(t+1) sim - C(t) sim
         
         # scaling reward
-        reward_dis /= 10000
+        #reward_dis /= 10000
         return reward_dis
 
     def get_reward_mse(self, canvas, next_canvas, goal, use_tensor=False):

@@ -19,6 +19,7 @@ from module.rpm import ReplayMemory
 from module.evaluate import Evaluator
 from module.logger import Logger
 from module.dataloader import DataLoader
+import time
 
 
 parser = argparse.ArgumentParser(description='Collage Training Arguments')
@@ -141,6 +142,7 @@ else:
 # Start training
 print('Stacking pre-interactions')
 for episode in range(int(args.num_episodes)):
+    ep_start = time.time()
     obs = env.reset()
     
     canvas = resize((args.width, args.height))(tensor(env.canvas, cpu=True))
@@ -181,6 +183,9 @@ for episode in range(int(args.num_episodes)):
             d_fake, d_real, cost = env.dis.update(env, memory, args.batch_size)
     else:
         d_fake, d_real, cost = 0, 0, 0
+    
+    time = time.time() - ep_start
+    logger.log('Time/episode', time, episode + 1)
 
     # Save networks
     if episode % args.save_term == 0:
