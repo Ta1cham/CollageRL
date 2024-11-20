@@ -132,7 +132,7 @@ class CollageEnv:
         reward_mse = self.get_reward_mse(self.canvas[0], next_canvas[0], self.goal[0])
         self.episode_reward_dis += reward_dis
         self.episode_reward_mse += reward_mse
-        reward = reward_dis
+        reward = reward_dis + reward_mse
         self.episode_reward_total += reward
         return {'dis':reward_dis, 'mse':reward_mse}
 
