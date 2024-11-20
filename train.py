@@ -184,8 +184,8 @@ for episode in range(int(args.num_episodes)):
     else:
         d_fake, d_real, cost = 0, 0, 0
     
-    time = time.time() - ep_start
-    logger.log('Time/episode', time, episode + 1)
+    time_1ep = time.time() - ep_start
+    logger.log('Time/episode', time_1ep, episode + 1)
 
     # Save networks
     if episode % args.save_term == 0:
