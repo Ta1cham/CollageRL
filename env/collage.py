@@ -228,7 +228,8 @@ class CollageEnv:
 
     def get_reward_mse(self, canvas, next_canvas, goal, use_tensor=False):
         # MSE reward
-        reward_mse = mse(canvas, goal, use_tensor=use_tensor) - mse(next_canvas, goal, use_tensor=use_tensor)
+        mode = "train"
+        reward_mse = mse(canvas, goal, mode, use_tensor=use_tensor) - mse(next_canvas, goal, mode, use_tensor=use_tensor)
         return reward_mse
 
     def get_reward(self, canvas, next_canvas, goal, use_tensor=False, shape=None, grad=False, step_penalty=True, complexity_bonus=True):
