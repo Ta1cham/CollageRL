@@ -47,6 +47,10 @@ parser.add_argument('--wmax', type=float, default=0.3)
 parser.add_argument('--hmin', type=float, default=0.05)
 parser.add_argument('--hmax', type=float, default=0.3)
 parser.add_argument('--learned_max_steps', type=int, default=10)
+
+# --initial_cavnas: random | white | complement(only for inference) <- 保留(なしかも) <- 別のargs(canvas_setup)で代用
+parser.add_argument('--canvas_setup', type=str, default='white')
+
 parser.add_argument('--initial_canvas', type=str, default='random')
 parser.add_argument('--num_cycles', type=int)
 parser.add_argument('--num_steps', type=int, default=1)
@@ -169,7 +173,8 @@ elif args.goal_resolution_fit == 'vertical':
 full_goal = cv2.cvtColor(cv2.resize(full_goal, goal_resolution, cv2.INTER_CUBIC), cv2.COLOR_BGR2RGB)/255
 
 # Make initial canvas
-full_canvas = np.ones_like(full_goal)
+#full_canvas = np.ones_like(full_goal)
+full_canvas = create_canvas(args, full_goal, device)
 
 # Counters & other info gatherers
 total_steps = 0  # count all steps including skipped steps

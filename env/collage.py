@@ -7,7 +7,6 @@ from env.utils import *
 from module.measure import *
 from model.gan import GAN
 
-
 class CollageEnv:
     def __init__(self, args, drawer, device, dataloader=None, dis=None, coord=None, one_batch=False):
         self.target_width = args.target_width
