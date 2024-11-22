@@ -18,6 +18,7 @@ from module.gpu import *  # Set device here
 from module.evaluate import Evaluator
 from module.logger import Logger
 from module.measure import get_complexity_heatmap, calculate_complexity
+from module.utils import create_canvas
 
 
 parser = argparse.ArgumentParser(description='Collage Training Arguments')
@@ -147,7 +148,7 @@ sensitivity = args.sensitivity
 source_name = args.source_dir.split('/')[-1]
 
 # Make results saving paths
-result_dir = f'{goal_name}{args.goal_resolution}{args.goal_resolution_fit}_'
+result_dir = f'{goal_name}{args.canvas_setup}{args.goal_resolution}{args.goal_resolution_fit}_'
 for scale in args.scale_order:
     result_dir += f'{scale}'
     if int(scale) != len(args.scale_order)-1:
@@ -174,7 +175,8 @@ full_goal = cv2.cvtColor(cv2.resize(full_goal, goal_resolution, cv2.INTER_CUBIC)
 
 # Make initial canvas
 #full_canvas = np.ones_like(full_goal)
-full_canvas = create_canvas(args, full_goal, device)
+full_canvas = create_canvas(args, full_goal)
+cv2.imwrite(f'{sequence_path}/0000.jpg', cv2.cvtColor(np.uint8(full_canvas*255), cv2.COLOR_BGR2RGB))
 
 # Counters & other info gatherers
 total_steps = 0  # count all steps including skipped steps
