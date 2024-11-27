@@ -238,7 +238,10 @@ class CollageEnv:
         else:
             reward = self.get_reward_dis(canvas, next_canvas, goal, use_tensor=use_tensor, shape=shape, grad=grad, complexity_bonus=complexity_bonus)
         if step_penalty:
-            reward -= 1
+            if self.mse_reward:
+                reward -= 250
+            else:
+                reward -= 1
         return reward
 
     def is_terminal(self):

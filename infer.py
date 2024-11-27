@@ -309,7 +309,7 @@ for ss, (target_width, target_height) in enumerate(zip(scale_order, scale_order)
                 # Select material based on Q-value
                 if args.model_based:
                     next_obs, info = env.independent_step(obs, action, nondiff=True, maintain_source=True)
-                    reward = env.get_reward_dis(obs[:, :3, :, :], next_obs[:, :3, :, :], obs[:, 3:6, :, :], use_tensor=True).detach().cpu().numpy()
+                    reward = env.get_reward(obs[:, :3, :, :], next_obs[:, :3, :, :], obs[:, 3:6, :, :], use_tensor=True).detach().cpu().numpy()
                     next_v = agent.get_value(next_obs)
                     q = reward + args.gamma * next_v
                     q = np.reshape(q, -1)
