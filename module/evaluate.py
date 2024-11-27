@@ -86,7 +86,7 @@ class Evaluator:
                 obs = obs.squeeze()
                 if args.model_based:
                     with torch.no_grad():
-                        action = agent.select_action(obs, evaluate=True)  # 각 obs에 대한 행동을 구함
+                        action = agent.select_action(obs, evaluate=True)  # 各obsに対する行動を求める
                     next_obs, info = env.independent_step(obs, action, nondiff=True, maintain_source=True)
                     reward = env.get_reward(obs[:, :3, :, :], next_obs[:, :3, :, :], obs[:, 3:6, :, :], use_tensor=True).detach().cpu().numpy()
                     next_v = agent.get_value(next_obs)
