@@ -9,7 +9,7 @@ WEIGHT_PATH='weights/agents/dtd2imgnet10S_random0110'
 ALGO=sac
 
 ### Goal image configuration
-GOAL_PATH='samples/goals/boat.jpg'
+GOAL_PATH='samples/goals/cat.jpeg'
 GOAL_RESOLUTION=512
 GOAL_RESOLUTION_FIT=horizontal
 
@@ -31,15 +31,21 @@ FIXED_T=9
 ### Seuqnce video configuration
 FPS=30
 
-python infer.py --scale $SCALE --weight_path $WEIGHT_PATH --num_multi_env 1 \
- --wmin $WMIN --wmax $WMAX --hmin $HMIN --hmax $HMAX --learned_max_steps $LEARNED_MAX_STEPS\
- --goal $GOAL_PATH --goal_resolution $GOAL_RESOLUTION --goal_resolution_fit $GOAL_RESOLUTION_FIT \
- --source_dir $SOURCE_DIR --source_resolution_ratio $SOURCE_RESOLUTION_RATIO \
- --source_load_limit $SOURCE_LOAD_LIMIT --source_sample_size $SOURCE_SAMPLE_SIZE --min_source_complexity $MIN_SOURCE_COMPLEXITY \
- --model_based --algo $ALGO --noop \
- --scale_order $SCALE_ORDER --num_cycles $NUM_CYCLES --window_ratio $WINDOW_RATIO --min_scrap_size $MIN_SCRAP_SIZE \
- --complexity_aware --sensitivity $SENSITIVITY --fixed_t $FIXED_T \
- --skip_negative_reward \
- --paper_like \
- --disallow_duplicate \
- --video_fps $FPS \
+array=("random" "complement" "msemax" "rev_comp" "rev_msemax" "white")
+
+for bg in "${array[@]}"
+do
+    python infer.py --scale $SCALE --weight_path $WEIGHT_PATH --num_multi_env 1 \
+    --wmin $WMIN --wmax $WMAX --hmin $HMIN --hmax $HMAX --learned_max_steps $LEARNED_MAX_STEPS\
+    --goal $GOAL_PATH --goal_resolution $GOAL_RESOLUTION --goal_resolution_fit $GOAL_RESOLUTION_FIT \
+    --source_dir $SOURCE_DIR --source_resolution_ratio $SOURCE_RESOLUTION_RATIO \
+    --source_load_limit $SOURCE_LOAD_LIMIT --source_sample_size $SOURCE_SAMPLE_SIZE --min_source_complexity $MIN_SOURCE_COMPLEXITY \
+    --model_based --algo $ALGO --noop \
+    --scale_order $SCALE_ORDER --num_cycles $NUM_CYCLES --window_ratio $WINDOW_RATIO --min_scrap_size $MIN_SCRAP_SIZE \
+    --complexity_aware --sensitivity $SENSITIVITY --fixed_t $FIXED_T \
+    --skip_negative_reward \
+    --paper_like \
+    --disallow_duplicate \
+    --video_fps $FPS \
+    --canvas_setup $bg
+done

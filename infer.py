@@ -256,7 +256,6 @@ for ss, (target_width, target_height) in enumerate(zip(scale_order, scale_order)
                 cycle_limit_map.append(int(round(args.num_cycles * st.norm.cdf(complexity) ** sensitivity)))
             else:
                 cycle_limit_map.append(copy.deepcopy(args.num_cycles))
-
         cycle_count = [0 for i in range(len(complexity_heatmap.reshape(-1)))]
 
     # Start cylcles at current scale
@@ -284,6 +283,7 @@ for ss, (target_width, target_height) in enumerate(zip(scale_order, scale_order)
             # Skip if current cycle already reached the assigned number of cycles on current (sub-canvas, sub-goal)
             if args.complexity_aware:
                 if cycle_count[part_id] == cycle_limit_map[part_id]:
+                    print(f"x, y: {x}, {y} / part_id: {part_id} / canvas_part: {canvas_part.shape} / goal_part: {goal_part.shape}")
                     skip_counter['low_complexity'] += 1
                     continue
                 else:
