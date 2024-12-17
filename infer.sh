@@ -9,7 +9,7 @@ WEIGHT_PATH='weights/agents/dtd2imgnet10S_random0110'
 ALGO=sac
 
 ### Goal image configuration
-GOAL_PATH='samples/goals/cat.jpeg'
+GOAL_PATH='samples/goals/seen.png'
 GOAL_RESOLUTION=512
 GOAL_RESOLUTION_FIT=horizontal
 
