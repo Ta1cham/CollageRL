@@ -18,6 +18,7 @@ from module.gpu import *  # Set device here
 from module.evaluate import Evaluator
 from module.logger import Logger
 from module.measure import get_complexity_heatmap, calculate_complexity
+from module.utils import create_canvas
 
 
 parser = argparse.ArgumentParser(description='Collage Training Arguments')
@@ -47,6 +48,10 @@ parser.add_argument('--wmax', type=float, default=0.3)
 parser.add_argument('--hmin', type=float, default=0.05)
 parser.add_argument('--hmax', type=float, default=0.3)
 parser.add_argument('--learned_max_steps', type=int, default=10)
+
+# --initial_cavnas: random | white | complement(only for inference) <- 保留(なしかも) <- 別のargs(canvas_setup)で代用
+parser.add_argument('--canvas_setup', type=str, default='white')
+
 parser.add_argument('--initial_canvas', type=str, default='random')
 parser.add_argument('--num_cycles', type=int)
 parser.add_argument('--num_steps', type=int, default=1)
@@ -143,7 +148,7 @@ sensitivity = args.sensitivity
 source_name = args.source_dir.split('/')[-1]
 
 # Make results saving paths
-result_dir = f'{goal_name}{args.goal_resolution}{args.goal_resolution_fit}_'
+result_dir = f'{goal_name}{args.canvas_setup}{args.goal_resolution}{args.goal_resolution_fit}_'
 for scale in args.scale_order:
     result_dir += f'{scale}'
     if int(scale) != len(args.scale_order)-1:
@@ -169,7 +174,9 @@ elif args.goal_resolution_fit == 'vertical':
 full_goal = cv2.cvtColor(cv2.resize(full_goal, goal_resolution, cv2.INTER_CUBIC), cv2.COLOR_BGR2RGB)/255
 
 # Make initial canvas
-full_canvas = np.ones_like(full_goal)
+#full_canvas = np.ones_like(full_goal)
+full_canvas = create_canvas(args, full_goal)
+cv2.imwrite(f'{sequence_path}/0000.jpg', cv2.cvtColor(np.uint8(full_canvas*255), cv2.COLOR_BGR2RGB))
 
 # Counters & other info gatherers
 total_steps = 0  # count all steps including skipped steps
@@ -249,7 +256,6 @@ for ss, (target_width, target_height) in enumerate(zip(scale_order, scale_order)
                 cycle_limit_map.append(int(round(args.num_cycles * st.norm.cdf(complexity) ** sensitivity)))
             else:
                 cycle_limit_map.append(copy.deepcopy(args.num_cycles))
-
         cycle_count = [0 for i in range(len(complexity_heatmap.reshape(-1)))]
 
     # Start cylcles at current scale
@@ -277,6 +283,7 @@ for ss, (target_width, target_height) in enumerate(zip(scale_order, scale_order)
             # Skip if current cycle already reached the assigned number of cycles on current (sub-canvas, sub-goal)
             if args.complexity_aware:
                 if cycle_count[part_id] == cycle_limit_map[part_id]:
+                    print(f"x, y: {x}, {y} / part_id: {part_id} / canvas_part: {canvas_part.shape} / goal_part: {goal_part.shape}")
                     skip_counter['low_complexity'] += 1
                     continue
                 else:

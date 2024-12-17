@@ -1,4 +1,5 @@
 import torch
+import os
 import kornia
 import torch
 import torch.nn as nn
@@ -131,13 +132,13 @@ class Drawer:
                 self.shaper = Shaper64Noop().to(device)
             else:
                 self.shaper = Shaper64().to(device)
-            self.shaper.load_state_dict(torch.load(f'weights/shapers/shaper{minf}{maxf}snoop.pkl'))
+            self.shaper.load_state_dict(torch.load(os.path.expanduser(f'~/modify_collage/weights/shapers/shaper{minf}{maxf}snoop.pkl')))
         elif args.scale == 'medium':
             if args.noop:
                 self.shaper = Shaper128Noop().to(device)
             else:
                 self.shaper = Shaper128().to(device)
-            self.shaper.load_state_dict(torch.load(f'weights/shapers/shaper{minf}{maxf}mnoop.pkl'))
+            self.shaper.load_state_dict(torch.load(os.path.expanduser(f'weights/shapers/shaper{minf}{maxf}mnoop.pkl')))
         else:
             print('not implemented yet')
             exit()
